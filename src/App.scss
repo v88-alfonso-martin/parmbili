@@ -1,0 +1,73 @@
+@import "./global.scss";
+
+.app_container {
+	height: 100vh;
+
+	header {
+		background-color: #27AE60;
+		color: #fff;
+		height: 50px;
+		padding-inline: 22px;
+		padding-top: 10px;
+
+		h2 {
+			font-size: 24px;
+		}
+	}
+
+	main {
+		background-color: #6FCF97;
+		flex: 100vh;
+		margin-inline: 22px ;
+		min-height: calc(100% - 50px);
+
+		.tiles_container {
+			margin: 0 auto;
+			padding-top: 20px;
+
+			.tiles {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px
+			}
+
+			& > p {
+				font-size: 20px;
+				font-weight: 700;
+				margin-top: 16px;
+			}
+
+			button {
+				background-color: #2D9CDB;
+				border-radius: 10px;
+				border: none;
+				color: #fff;
+				cursor: pointer;
+				font-weight: 700;
+				height: 60px;
+				width: 210px;
+			}
+		}
+
+		.four {
+			width: 430px;
+		}
+
+		.five {
+			width: 540px;
+		}
+
+		.six {
+			width: 650px;
+		}
+
+		.seven {
+			width: 760px;
+		}
+
+		.eight{
+			width: 870px;
+		}
+
+	}
+}

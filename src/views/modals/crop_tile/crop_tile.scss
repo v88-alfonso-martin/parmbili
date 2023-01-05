@@ -1,0 +1,11 @@
+@import "../../../global.scss";
+
+.crop_tile {
+    @extend .tile_figure;
+    background-color: #E0E0E0;
+    
+    p {
+        font-size: 12px;
+        margin-bottom: 0;
+    }
+}

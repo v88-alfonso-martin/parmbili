@@ -1,0 +1,48 @@
+@import "../../global.scss";
+
+.popover-body {
+
+    button {
+        background-color: $primary;
+        border-radius: 5px;
+        border: none;
+        color: #fff;
+        font-size: 24px;
+        height: 40px;
+        width: 124px;
+    }
+
+    .gray_button {
+        background-color: #4F4F4F;
+    }
+
+    .buttons_container > * {
+        display: block;
+        
+        &:last-child {
+            margin-top: 10px;
+        }
+    }
+}
+
+.tile {
+    @extend .tile_figure;
+    background-color: $secondary;
+
+    p {
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+.tilled {
+    background-color: #F2994A;
+}
+
+.has_plant {
+    background-color: #F2C94C;
+}
+
+.for_harvesting {
+    background-color: #219653;
+}

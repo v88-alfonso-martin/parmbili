@@ -1,0 +1,19 @@
+$primary: #2f80ed;
+$secondary: #828282;
+$warning: #eb5757;
+
+.disabled {
+	opacity: 80%;
+}
+
+.tile_figure {
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 100px;
+    justify-content: center;
+    width: 100px;
+}

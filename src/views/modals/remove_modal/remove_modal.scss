@@ -1,0 +1,37 @@
+@import "../../../global.scss";
+
+.remove_modal {
+    text-align: center;
+    z-index: 9990;
+
+    .modal-body {
+
+        h5 {
+            color: $warning;
+            font-weight: 700;
+        }
+
+        p {
+            padding-inline: 50px;
+        }
+
+        button {
+            border-radius: 5px;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            height: 40px;
+            width: 120px;
+        }
+
+        .cancel_button {
+            background-color: $warning;
+            margin-right: 10px;
+        }
+
+        .success_button {
+            background-color: $secondary;
+            margin-left: 10px;
+        }
+    }
+}
