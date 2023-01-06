@@ -1,5 +1,9 @@
 @import "../../global.scss";
 
+.popover {
+    z-index: 0;
+}
+
 .popover-body {
 
     button {

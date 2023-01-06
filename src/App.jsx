@@ -97,7 +97,7 @@ function App() {
 				if (tile.id === tile_id) {
 					return {
 						...tile,
-						state: tile.harvesting_time === 0 ? "for_harvesting" : tile.state,
+						state: tile.harvesting_time === 0 && tile.crop_planted ? "for_harvesting" : tile.state,
 						harvesting_time
 					};
 				}
@@ -171,6 +171,8 @@ function App() {
 		setEarnings(prev_state => prev_state - expand_price);
 	}
 
+	let tile_size = tiles.length === 16 ? "four" : tiles.length === 25 ? "five" : tiles.length === 36 ? "six" : tiles.length === 49 ? "seven" : tiles.length === 64 ? "eight" : "";
+
 	return (
 		<div className="app_container">
 			<header>
@@ -178,7 +180,7 @@ function App() {
 			</header>
 			<main>
 				<div
-					className={`tiles_container ${tiles.length === 16 ? "four" : tiles.length === 25 ? "five" : tiles.length === 36 ? "six" : tiles.length === 49 ? "seven" : tiles.length === 64 ? "eight" : ""}`}
+					className={`tiles_container ${tile_size}`}
 				>
 					<div className="tiles">
 						{tiles.map(tile => (
