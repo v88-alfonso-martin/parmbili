@@ -197,7 +197,7 @@ function App() {
 							/>
 						))}
 					</div>
-					<p>Total Earnings: {earnings}$</p>
+					<p id="earnings">Total Earnings: {earnings}$</p>
 					{tiles.length === 16 ? (
 						<button
 							className={earnings < 180 ? "disabled" : ""}

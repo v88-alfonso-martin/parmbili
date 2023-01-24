@@ -4,16 +4,19 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^5.2.3",
+    "chromedriver": "^109.0.0",
+    "mocha": "^10.2.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1",
-    "sass": "^1.57.1"
+    "sass": "^1.57.1",
+    "selenium-webdriver": "^4.7.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "NODE_ENV=development ./node_modules/.bin/mocha tests/frontend/*.test.js",
     "eject": "react-scripts eject"
   },
   "browserslist": {
