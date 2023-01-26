@@ -3,7 +3,7 @@ const assert = require("assert");
 const { Builder, By, Key, until } = require("selenium-webdriver");
 const { CONSTANT, HARVESTING_TIME, CROP } = require("./constants");
 
-const screen = { width: 1920, height: 1043 };
+const screen = { width: CONSTANT.width, height: CONSTANT.height };
 let chrome_options = new chrome.Options().windowSize(screen);
 chrome_options.addArguments("--proxy-server='direct://'");
 chrome_options.addArguments("--proxy-bypass-list=*");

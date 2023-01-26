@@ -2,7 +2,9 @@ const CONSTANT = {
     timeout: 200000,
     sleep: 1000,
     assert_timeout: 30000,
-    tile: 25
+    tile: 25,
+    width: 1920,
+    height: 1043
 }
 
 const CROP = {
