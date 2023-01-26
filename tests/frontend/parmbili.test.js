@@ -1,241 +1,195 @@
 const chrome = require("selenium-webdriver/chrome");
 const assert = require("assert");
 const { Builder, By, Key, until } = require("selenium-webdriver");
+const { CONSTANT, HARVESTING_TIME, CROP } = require("./constants");
 
-const screen = { width: 1080, height: 720 };
+const screen = { width: 1920, height: 1043 };
 let chrome_options = new chrome.Options().windowSize(screen);
 chrome_options.addArguments("--proxy-server='direct://'");
 chrome_options.addArguments("--proxy-bypass-list=*");
-chrome_options.addArguments("--headless"); 
+chrome_options.addArguments("--headless");
 chrome_options.addArguments("--disable-gpu");
-chrome_options.addArguments("--blink-settings=imagesEnabled=false"); 
+chrome_options.addArguments("--blink-settings=imagesEnabled=false");
 
+/** 
+*   DOCU: Test the parmbili activity
+*   Last updated at: January 25, 2023
+*   @author Alfonso
+*/
+describe("parmbili unit tests", function () {
+	this.timeout(CONSTANT.timeout);
+	let driver;
 
-describe('parmbili', function() {
-    this.timeout(30000)
-    let driver
-    let vars
+	/** 
+	*   DOCU: Check if element exists
+	*   Last updated at: January 25, 2023
+	*   @param {string} assert_element the element to be asserted
+	*   @author Alfonso
+	*/
+	const assertElement = async (assert_element) => {
+		await driver.wait(until.elementLocated(By.css(assert_element)), CONSTANT.assert_timeout);
+		{
+			const search_input_field = await driver.findElements(By.css(assert_element));
+			assert(search_input_field.length);
+		}
+		await driver.wait(until.elementIsVisible(await driver.findElement(By.css(assert_element))), CONSTANT.assert_timeout);
+	}
 
-    before(async function(){
-        driver = await new Builder()
-                .forBrowser("chrome")
-                .setChromeOptions(chrome_options)
-                .build(); 
-        await driver.get("http://localhost:3000/");
-    });
+	/** 
+	*   DOCU: Harvest the plant
+	*   Last updated at: January 25, 2023
+	*   @author Alfonso
+	*/
+	const harvestPlant = async () => {
+		await driver.findElement(By.css(".for_harvesting")).click();
+		await assertElement(".for_harvesting");
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+	}
 
-    beforeEach(async function() {
-        await driver.sleep(3000);
-        vars = {}
-    });
+	/** 
+	*   DOCU: Plant selected crop
+	*   Last updated at: January 25, 2023
+	*   @param {string} crop the selected crop to be planted
+	*   @author Alfonso
+	*/
+	const plantCrop = async (crop) => {
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement(".crop_modal");
+		await driver.findElement(By.css(crop)).click();
+		await assertElement(".success_button");
+		await driver.findElement(By.css(".success_button")).click();
+		await assertElement(".tile:nth-child(1)");
+	}
 
-    after(async function() {
-        await driver.quit();
-    });
+	before(async function () {
+		driver = await new Builder().forBrowser("chrome").setChromeOptions(chrome_options).build();
+		await driver.get("http://localhost:3000/");
+	});
 
+	beforeEach(async function () {
+		await driver.sleep(CONSTANT.sleep);
+	});
 
-  it('till', async function() {
-    // Test name: till
-    // Step # | name | target | value
-    // 1 | open | / | 
-    await driver.get("http://localhost:3000/")
-    // 2 | setWindowSize | 1920x1043 | 
-    await driver.manage().window().setRect({ width: 1920, height: 1043 })
-    // 3 | click | css=.tile:nth-child(1) | 
-    await driver.findElement(By.css(".tile:nth-child(1)")).click()
-    // 4 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-  })
+	after(async function () {
+		await driver.quit();
+	});
 
-  it('plant', async function() {
-    // Test name: plant
-    // Step # | name | target | value
-    // 1 | open | / | 
-    await driver.get("http://localhost:3000/")
-    // 2 | setWindowSize | 1920x1043 | 
-    await driver.manage().window().setRect({ width: 1920, height: 1043 })
-    // 3 | click | css=.tile:nth-child(1) | 
-    await driver.findElement(By.css(".tile:nth-child(1)")).click()
-    // 4 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 5 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 6 | click | css=label:nth-child(1) img | 
-    await driver.findElement(By.css("label:nth-child(1) img")).click()
-    // 7 | click | css=.success_button | 
-    await driver.findElement(By.css(".success_button")).click()
-  })
+	/** 
+	*   DOCU: Till the tile
+	*   Last updated at: January 25, 2023
+	*   @author Alfonso
+	*/
+	it("1. Check if user can till the tile.", async function () {
+		await driver.findElement(By.css(".tile:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement(".tilled");
+	});
 
-  it('cancel_plant', async function() {
-    // Test name: cancel plant
-    // Step # | name | target | value
-    // 1 | open | / | 
-    await driver.get("http://localhost:3000/")
-    // 2 | setWindowSize | 1920x1043 | 
-    await driver.manage().window().setRect({ width: 1920, height: 1043 })
-    // 3 | click | css=.tile:nth-child(1) | 
-    await driver.findElement(By.css(".tile:nth-child(1)")).click()
-    // 4 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 5 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 6 | click | css=label:nth-child(1) img | 
-    await driver.findElement(By.css("label:nth-child(1) img")).click()
-    // 7 | click | css=.cancel_button | 
-    await driver.findElement(By.css(".cancel_button")).click()
-  })
+	/** 
+	*   DOCU: Plant a crop
+	*   Last updated at: January 25, 2023
+	*   @author Alfonso
+	*/
+	it("2. Check if user can plant a crop", async function () {
+		await plantCrop(CROP.potato);
+	});
 
-  it('remove_plant', async function() {
-    // Test name: remove plant
-    // Step # | name | target | value
-    // 1 | open | / | 
-    await driver.get("http://localhost:3000/")
-    // 2 | setWindowSize | 1920x1043 | 
-    await driver.manage().window().setRect({ width: 1920, height: 1043 })
-    // 3 | click | css=main | 
-    await driver.findElement(By.css("main")).click()
-    // 4 | click | css=.tile:nth-child(1) | 
-    await driver.findElement(By.css(".tile:nth-child(1)")).click()
-    // 5 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 6 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 7 | click | css=label:nth-child(1) img | 
-    await driver.findElement(By.css("label:nth-child(1) img")).click()
-    // 8 | click | css=.success_button | 
-    await driver.findElement(By.css(".success_button")).click()
-    // 9 | mouseOver | css=.success_button | 
-    {
-      const element = await driver.findElement(By.css(".success_button"))
-      await driver.actions({ bridge: true }).move(element).perform()
-    }
-    // 10 | click | css=.has_plant | 
-    await driver.findElement(By.css(".has_plant")).click()
-    // 11 | click | css=.gray_button | 
-    await driver.findElement(By.css(".gray_button")).click()
-    // 12 | click | css=.success_button | 
-    await driver.findElement(By.css(".success_button")).click()
-  })
+	/** 
+	*   DOCU: Cancel planting a crop
+	*   Last updated at: January 25, 2023
+	*   @author Alfonso
+	*/
+	it("3. Check if user can cancel planting a crop", async function () {
+		await driver.findElement(By.css(".tile:nth-child(2)")).click();
+		await assertElement("button:nth-child(1)");
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement(".crop_modal");
+		await driver.findElement(By.css("label:nth-child(1) img")).click();
+		await assertElement(".cancel_button");
+		await driver.findElement(By.css(".cancel_button")).click();
+		await assertElement(".tile:nth-child(2)");
+	});
 
-  it('harvest_plant', async function() {
-     // Test name: harvest_plant
-    // Step # | name | target | value
-    // 1 | open | / | 
-    await driver.get("http://localhost:3000/")
-    // 2 | setWindowSize | 1920x1043 | 
-    await driver.manage().window().setRect({ width: 1920, height: 1043 })
-    // 3 | click | css=.tile:nth-child(1) | 
-    await driver.findElement(By.css(".tile:nth-child(1)")).click()
-    // 4 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 5 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 6 | click | css=label:nth-child(1) img | 
-    await driver.findElement(By.css("label:nth-child(1) img")).click()
-    // 7 | click | css=.success_button | 
-    await driver.findElement(By.css(".success_button")).click()
-    // 8 | waitForText | css=.for_harvesting > p | 15$
-    await driver.wait(until.elementTextIs(await driver.findElement(By.css(".tile > p")), '15$'), 30000)
-    // 9 | click | css=.for_harvesting | 
-    await driver.findElement(By.css(".for_harvesting")).click()
-    // 10 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 11 | assertText | id=earnings | Total Earnings: 55$
-    assert(await driver.findElement(By.id("earnings")).getText() == "Total Earnings: 55$")
-  })
+	/** 
+	*   DOCU: Remove a crop that is planted in the tile
+	*   Last updated at: January 25, 2023
+	*   @author Alfonso
+	*/
+	it("4. Check if user can remove a planted crop", async function () {
+		await driver.findElement(By.css(".has_plant")).click();
+		await assertElement(".has_plant");
+		await driver.findElement(By.css(".gray_button")).click();
+		await assertElement(".gray_button");
+		await driver.findElement(By.css(".success_button")).click();
+		await assertElement(".tile:nth-child(1)");
+	});
 
-it('cancel_plant_planted', async function() {
-    // Test name: cancel_plant_planted
-    // Step # | name | target | value
-    // 1 | open | / | 
-    await driver.get("http://localhost:3000/")
-    // 2 | setWindowSize | 1920x1043 | 
-    await driver.manage().window().setRect({ width: 1920, height: 1043 })
-    // 3 | click | css=.tile:nth-child(1) | 
-    await driver.findElement(By.css(".tile:nth-child(1)")).click()
-    // 4 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 5 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 6 | mouseOver | css=button:nth-child(1) | 
-    {
-      const element = await driver.findElement(By.css("button:nth-child(1)"))
-      await driver.actions({ bridge: true }).move(element).perform()
-    }
-    // 7 | mouseOut | css=.popover-body > button | 
-    {
-      const element = await driver.findElement(By.css("body"))
-      await driver.actions({ bridge: true }).move(element, 0, 0).perform()
-    }
-    // 8 | click | css=label:nth-child(1) img | 
-    await driver.findElement(By.css("label:nth-child(1) img")).click()
-    // 9 | click | css=.success_button | 
-    await driver.findElement(By.css(".success_button")).click()
-    // 10 | click | css=img | 
-    await driver.findElement(By.css("img")).click()
-    // 11 | click | css=.gray_button | 
-    await driver.findElement(By.css(".gray_button")).click()
-    // 12 | click | css=.success_button | 
-    await driver.findElement(By.css(".success_button")).click()
-  })
+	/** 
+	*   DOCU: Harvest a crop that is planted in the tile
+	*   Last updated at: January 25, 2023
+	*   @author Alfonso
+	*/
+	it("5. Check is user can harvest a planted crop", async function () {
+		await driver.findElement(By.css(".tile:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await plantCrop(CROP.potato);
+		await driver.wait(until.elementTextIs(await driver.findElement(By.css(".tile:nth-child(1) > p")), "15$"), HARVESTING_TIME.potato);
+		await harvestPlant();
+		await assert((await driver.findElement(By.id("earnings")).getText()) == "Total Earnings: 45$");
+	});
 
-it('expand_land', async function() {
-    // Test name: expand
-    // Step # | name | target | value
-    // 1 | open | / | 
-    await driver.get("http://localhost:3000/")
-    // 2 | setWindowSize | 1920x1043 | 
-    await driver.manage().window().setRect({ width: 1920, height: 1043 })
-    // 3 | click | css=.tile:nth-child(1) | 
-    await driver.findElement(By.css(".tile:nth-child(1)")).click()
-    // 4 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 5 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 6 | click | css=label:nth-child(4) > .crop_tile | 
-    await driver.findElement(By.css("label:nth-child(4) > .crop_tile")).click()
-    // 7 | click | css=.success_button | 
-    await driver.findElement(By.css(".success_button")).click()
-    // 8 | click | css=.has_plant | 
-    await driver.findElement(By.css(".has_plant")).click()
-    // 9 | click | css=.has_plant | 
-    await driver.findElement(By.css(".has_plant")).click()
-    // 10 | doubleClick | css=.has_plant | 
-    {
-      const element = await driver.findElement(By.css(".has_plant"))
-      await driver.actions({ bridge: true}).doubleClick(element).perform()
-    }
-    // 11 | click | css=.for_harvesting | 
-    await driver.findElement(By.css(".for_harvesting")).click()
-    // 12 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 13 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 14 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 15 | click | css=label:nth-child(4) > .crop_tile | 
-    await driver.findElement(By.css("label:nth-child(4) > .crop_tile")).click()
-    // 16 | click | css=.success_button | 
-    await driver.findElement(By.css(".success_button")).click()
-    // 17 | click | css=.has_plant | 
-    await driver.findElement(By.css(".has_plant")).click()
-    // 18 | click | css=.has_plant | 
-    await driver.findElement(By.css(".has_plant")).click()
-    // 19 | doubleClick | css=.has_plant | 
-    {
-      const element = await driver.findElement(By.css(".has_plant"))
-      await driver.actions({ bridge: true}).doubleClick(element).perform()
-    }
-    // 20 | click | css=.for_harvesting | 
-    await driver.findElement(By.css(".for_harvesting")).click()
-    // 21 | click | css=button:nth-child(1) | 
-    await driver.findElement(By.css("button:nth-child(1)")).click()
-    // 22 | click | css=button:nth-child(3) | 
-    await driver.findElement(By.css("button:nth-child(3)")).click()
-    // assert(driver.findElement(By.xpath("//div[@id='root']/div/main/div/div")))
-    // console.log(await driver.findElements(By.css(".tiles tile")));
-          // Get all the elements available with tag name 'p'
-    let land = await driver.findElement(By.css(".tiles")).findElements(By.css(".tile"));
-    assert(land.length === 25);
-  })
-})
+	/** 
+	*   DOCU: Remove a crop that is ready for harvesting
+	*   Last updated at: January 25, 2023
+	*   @author Alfonso
+	*/
+	it("6. Check if user can cancel removing a ready for harvesting crop", async function () {
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await plantCrop(CROP.potato);
+		await driver.findElement(By.css("img")).click();
+		await assertElement("img");
+		await driver.wait(until.elementTextIs(await driver.findElement(By.css(".tile:nth-child(1) > p")), "15$"), HARVESTING_TIME.potato);
+		await driver.findElement(By.css(".tile:nth-child(1)")).click();
+		await assertElement(".tile:nth-child(1)");
+		await driver.findElement(By.css(".gray_button")).click();
+		await assertElement(".gray_button");
+		await driver.findElement(By.css(".success_button")).click();
+		await assertElement(".tile:nth-child(1)");
+	});
+
+	/** 
+	*   DOCU: Plant three corns then expand the land
+	*   Last updated at: January 25, 2023
+	*   @author Alfonso
+	*/
+	it("7. Check if a user can expand the tile", async function () {
+		await driver.findElement(By.css(".tile:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await plantCrop(CROP.corn);
+		await driver.wait(until.elementLocated(By.css(".for_harvesting")), HARVESTING_TIME.corn);
+		await harvestPlant();
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await plantCrop(CROP.corn);
+		await driver.wait(until.elementLocated(By.css(".for_harvesting")), HARVESTING_TIME.corn);
+		await harvestPlant();
+		await driver.findElement(By.css("button:nth-child(1)")).click();
+		await assertElement("button:nth-child(1)");
+		await plantCrop(CROP.corn);
+		await driver.wait(until.elementLocated(By.css(".for_harvesting")), HARVESTING_TIME.corn);
+		await harvestPlant();
+		await driver.findElement(By.css("button:nth-child(3)")).click();
+		await assertElement("button:nth-child(3)");
+		let land = await driver.findElement(By.css(".tiles")).findElements(By.css(".tile"));
+		await assert(land.length === CONSTANT.tile);
+	});
+});
